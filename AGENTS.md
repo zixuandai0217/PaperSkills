@@ -1,496 +1,536 @@
-# AGENTS.md - PaperSkills 科研协作契约（SATD-first）
+# PaperSkills Collaboration Contract (Agentic AI-first)
 
-> **读取声明**: Following project rules
+> **Read and follow project rules.**
 
-本文档约束 AI Agent 与人类研究者如何在本仓库中协作开展科研、原型实现、实验验证与论文产出。
+<!-- Why: Reposition the repository collaboration contract from SATD-first to Agentic AI-first while preserving SATD repair as the flagship benchmark and validation scenario. Scope: Rewrites the repository mission, workflow, evaluation rules, artifact templates, and acceptance cases in English for both AGENTS.md and CLAUDE.md. Verify: Confirm the file is English-only, retains the hard constraints on evidence and validation, and stays identical to the mirrored contract file after the rewrite. -->
 
-<!-- Why: 将仓库默认研究主线收敛到 SATD 自动修复，减少过于宽泛的通用表述。 Scope: 影响全文的问题定义、实验设计、评测标准与写作要求。 Verify: 检查后续章节是否均围绕 SATD-first 的 LLM-based Software Engineering 研究组织。 -->
+This document governs how AI agents and human researchers collaborate in PaperSkills on research design, prototyping, evaluation, writing, and review.
 
-本仓库以 **大模型软件工程研究（LLM-based Software Engineering）** 为主线，默认研究主题为 **自承认技术债务（Self-Admitted Technical Debt, SATD）自动化修复**。仓库允许处理更一般的大模型应用或软件工程问题，但若无用户明确重定义，Agent 应默认将任务理解为服务于 SATD 自动修复研究。
-
----
-
-## Agent 启动规则
-
-开始任何任务前，Agent 必须显式声明当前工作模式：
-
-- **`[PLANNING]`** - 规划阶段：问题界定、文献调研、方案设计
-- **`[EXECUTING]`** - 执行阶段：原型实现、实验运行、数据收集
-- **`[VERIFYING]`** - 验证阶段：结果检验、消融分析、误差分析
-- **`[WRITING]`** - 写作阶段：论文撰写、PPT 制作、汇报准备
-- **`[REVIEWING]`** - 审查阶段：代码审查、论文审阅、结果复核
-
-默认协作规则如下：
-
-- 开始任务时，先检查当前可用 skills，并优先触发 `using-superpowers`。
-- 若 `using-superpowers` 或其他预期 skill 在当前环境不可用，必须显式说明不可用，并退回到本 `AGENTS.md` 的默认流程。
-- 每次任务启动时，必须给出简短执行摘要，至少说明：
-  - 当前工作模式
-  - 是否已触发 `using-superpowers`
-  - 是否额外采用其他 skills 或回退到通用流程
-- 默认先做只读探索，理解上下文后再提问或执行。
-- 在没有新鲜验证证据前，不得宣称“已完成”“已修复”“已通过”“结果成立”。
-- 当任务涉及代码、Prompt、评测或文档的非平凡修改时，必须补充 `Why / Scope / Verify` 注释并执行相应验证。
+PaperSkills is primarily a repository for **Agentic AI in Intelligent Software Engineering**. Its flagship benchmark and default concrete validation scenario is **Self-Admitted Technical Debt (SATD) repair**, but the repository also supports broader intelligent software engineering work when the same evidence, reproducibility, and evaluation standards are preserved.
 
 ---
 
-## 仓库定位与默认研究主线
+## Required Startup Behavior
 
-本仓库默认关注以下问题：
+Before starting any task, the agent must explicitly declare the current work mode:
 
-- 如何识别、理解与定位 SATD 注释所指向的真实技术债务
-- 如何利用 LLM、Prompt、Tool use、Workflow 或 Agent 自动生成 SATD 修复方案
-- 如何验证“债务是否真正解除”，而不是仅仅删除注释或制造表面上的代码变化
-- 如何构建可复现、可比较、可回归的 SATD 自动修复评测流程
+- **`[PLANNING]`** - problem framing, literature review, and study design
+- **`[EXECUTING]`** - implementation, experimentation, and data collection
+- **`[VERIFYING]`** - result checking, ablation review, and error analysis
+- **`[WRITING]`** - paper drafting, slide writing, and reporting
+- **`[REVIEWING]`** - code review, document review, and result audit
 
-本仓库的默认研究问题可以概括为：
+Default collaboration rules:
 
-> 在真实软件项目中，如何让大模型系统更可靠地完成 SATD 的理解、定位、修复与验证，并形成可验证的研究贡献？
-
-### 非默认扩展：一般大模型应用研究
-
-若用户明确要求处理 SATD 之外的大模型应用问题，仍可在本仓库中开展工作；但 Agent 应明确说明这属于**非默认主线**，并继续遵守本文档中关于证据、可复现性、基线比较、失败分析与写作真实性的全部约束。
-
----
-
-## SATD 定义与边界
-
-SATD 指开发者由于时间、兼容性、资源、上线压力或其他现实约束，主动在代码注释中承认当前实现是临时、次优、待重构或待修复的技术债务。
-
-### 典型 SATD 表达
-
-- `TODO`, `FIXME`, `HACK`, `XXX` 等显式 debt 注释
-- 明确承认“先临时这样做，后续再修”的自然语言注释
-- 指向设计妥协、性能妥协、兼容性妥协、测试缺失或实现不完整的注释
-
-### 非 SATD 边界
-
-以下内容默认**不直接视为 SATD**，除非上下文明确表明其包含技术债承认：
-
-- 普通开发提醒或任务分派
-- 纯功能愿望单或未来特性构想
-- 没有承认“当前实现存在次优妥协”的一般说明性注释
-- 与技术实现无关的文档性说明
-
-### 本仓库关注的 SATD 子任务
-
-- SATD 检测与分类
-- SATD 注释与代码片段对齐
-- SATD 修复生成
-- 修复后验证
-- 债务是否真正解除的判定
-
-### SATD 修复的最低真实性要求
-
-- 不能仅删除 SATD 注释就宣称债务解除
-- 不能只生成看似合理但未经构建、测试或行为验证的补丁
-- 不能把“暂时压制报错”误报为“真正修复”
-- 若只能部分修复，必须明确标注为“部分解除”并说明剩余风险
+- At task start, inspect the currently available skills and prioritize `using-superpowers`.
+- If `using-superpowers` or another expected skill is unavailable, say so explicitly and fall back to the repository contract in this file.
+- Every task-start summary must state:
+  - the current work mode
+  - whether `using-superpowers` was triggered
+  - whether any additional skills were used or a fallback workflow was chosen
+- Start with read-only exploration before asking follow-up questions or making changes.
+- Do not claim that something is complete, fixed, passing, or validated without fresh verification evidence.
+- Any non-trivial change to code, prompts, evaluation settings, or research documents must include `Why / Scope / Verify` annotations and matching validation.
 
 ---
 
-## 默认科研流程
+## Repository Mission and Default Interpretation
 
-<!-- Why: 将通用科研流程改写为更贴合 SATD 自动修复的 SOP，确保后续产物、评测与写作一致。 Scope: 影响 Research Brief、Experiment Plan、Evaluation Summary、Writing Pack 等所有核心产物。 Verify: 检查最小科研产物模板是否与本节步骤一一对应。 -->
+PaperSkills focuses on the following default research questions:
 
-Agent 必须按以下顺序协助科研工作，每步仅要求最小必要产物，但不得跳过关键决策。
+- How can Agentic AI systems reliably understand, localize, repair, and verify software engineering problems?
+- How should prompts, tools, retrieval, memory, and workflow structure be combined in intelligent software engineering systems?
+- How can repair-oriented workflows be evaluated with realistic, reproducible, and regression-aware protocols?
+- How can research artifacts remain traceable from system design to experiment record to paper claim?
 
-### Step 1: 问题界定（Research Brief）
+The default repository question can be summarized as:
 
-必须明确：
+> In real software projects, how can Agentic AI systems perform understanding, localization, repair, and verification work more reliably, and how can those behaviors be turned into defensible research contributions?
 
-- 问题陈述
-- SATD 任务类型：检测、分类、对齐、修复或验证
-- 目标制品：注释、函数、文件、补丁、Benchmark、Workflow 或 Agent
-- 预期贡献形态：新任务、新方法、新基线、新系统或经验性发现
-- 成功标准
-- 验证约束
+Default interpretation rule:
 
-### Step 2: 相关工作与研究缺口（Related Work & Gap）
+> Unless the user explicitly redefines the scope, treat each task as contributing to Agentic AI for intelligent software engineering, with SATD repair as the flagship benchmark and validation path.
 
-必须明确：
+### In-Scope Extensions
 
-- 3 至 5 篇核心相关工作
-- SATD 相关工作与 LLM4SE 相关工作的交叉关系
-- 明确的研究缺口（Gap）
-- 本工作的差异化定位
+The following are still within the main repository direction:
 
-### Step 3: 任务与基准设计（Task / Benchmark Design）
+- SATD detection, classification, alignment, repair, and verification
+- agentic code repair beyond SATD
+- tool-using software engineering workflows
+- benchmark design for repair, regression prevention, or agent evaluation
+- reproducibility, error taxonomy, and workflow instrumentation for intelligent software engineering
 
-必须明确：
+### Out-of-Main-Line Work
 
-- 数据来源或项目来源
-- 项目范围与语言范围
-- 数据切分协议
-- 任务粒度与输入输出形式
-- 基线设置
-- 是否需要人工标注、人工复核或专家评审
-
-### Step 4: 系统、Prompt 与 Agent 设计（System / Prompt / Agent Design）
-
-必须明确：
-
-- 输入上下文包含什么
-- 是否使用检索，以及检索源是什么
-- 修复动作空间是什么
-- 是否允许工具调用、测试执行或多轮交互
-- 安全约束与失败保护机制
-- 日志记录与版本记录方式
-
-### Step 5: 实现与验证（Verification & Evaluation）
-
-必须明确：
-
-- 编译、构建、测试或静态检查要求
-- 债务解除检查标准
-- 行为回归检查方式
-- 人工复核触发条件
-- 失败样例与误差分析记录方式
-
-### Step 6: 评估总结（Evaluation Summary）
-
-必须沉淀：
-
-- 主结果对比
-- 消融实验
-- 错误案例分析
-- 回归风险
-- 局限性讨论
-
-### Step 7: 写作产出（Writing Pack）
-
-必须沉淀：
-
-- 论文、PPT 或报告草稿
-- 关键图表
-- 结论到实验记录的回链
-- `[PENDING]` 或 `[PLACEHOLDER]` 项标注
+If the user asks for a broader LLM application that is not really an intelligent software engineering problem, the repository may still be used, but the agent should state clearly that the task is outside the main line. Evidence, reproducibility, failure reporting, and writing honesty rules still apply.
 
 ---
 
-## 主线规则：LLM-based Software Engineering
+## Agentic AI Research Workflow
 
-在本仓库中，所有 SATD 自动修复研究默认属于 LLM-based Software Engineering 范畴。以下事项必须明确：
+Follow this workflow in order. Do not skip critical decisions even when the output format is lightweight.
 
-- [ ] **系统边界**：系统包含什么，不包含什么，与外部如何交互
-- [ ] **模块职责**：每个模块的输入、输出与责任边界
-- [ ] **Prompt / Tool / Agent 版本**：每次实验是否可追踪到具体版本
-- [ ] **评测协议**：评测脚本、命令、指标、汇总方式是否稳定
-- [ ] **回归集**：是否有用于防止性能或行为退化的标准集合
-- [ ] **错误分类**：错误如何分桶、统计与追踪
-- [ ] **复现条件**：模型、环境、数据、依赖、配置是否可复现
+### Step 1: Problem Framing (`Research Brief`)
 
-### 禁止项
+Must define:
 
-- ❌ 改了 Prompt、Tool 或 Agent 流程却没有版本记录
-- ❌ 没有回归验证就声称修复有效
-- ❌ 评测脚本与论文描述不一致
-- ❌ 无法解释的系统行为被直接包装成“模型能力”
-- ❌ 使用未记录的“魔法参数”影响实验结果
+- problem statement
+- task type: `detection | classification | alignment | repair | verification | workflow | benchmark | agent_evaluation`
+- target artifact: `comment | function | file | patch | benchmark | workflow | agent`
+- intended contribution: `new_task | new_method | new_benchmark | new_system | empirical_finding`
+- success criteria
+- validation constraints
 
----
+### Step 2: Related Work and Research Gap
 
-## SATD 自动修复评测协议
+Must define:
 
-<!-- Why: 为 SATD 自动修复建立统一评测口径，避免 demo 驱动结论或只报告局部成功案例。 Scope: 影响基线选择、指标定义、消融设计和错误分类。 Verify: 检查实验计划与最终评估是否至少覆盖本节的最小要素。 -->
+- 3 to 5 core related works
+- how prior software engineering work and Agentic AI work intersect
+- the concrete research gap
+- the differentiating position of the proposed work
 
-### 基线类型
+### Step 3: Task and Benchmark Design
 
-实验设计时至少要说明是否覆盖以下基线中的相关类型：
+Must define:
 
-- 规则或启发式方法
-- 普通 prompting
-- 检索增强 prompting
-- Agentic repair 或多轮交互修复
-- 已有 SATD 方法或最接近的公开方法
+- dataset or project sources
+- project scope and language scope
+- split protocol
+- task granularity and input-output format
+- baseline families
+- whether human annotation, human review, or expert judgment is required
 
-### 核心指标
+### Step 4: System, Prompt, and Agent Design
 
-必须根据任务实际情况选择并报告：
+Must define:
 
-- 修复成功率
-- 编译或构建通过率
-- 测试通过率
-- 债务解除准确性
-- 编辑代价或补丁规模
-- 推理时延与成本
-- 人工一致性或人工评审通过率（若使用人工评估）
+- system boundary
+- module responsibilities
+- input context
+- retrieval sources, if any
+- tool permissions and action space
+- whether multi-turn interaction is allowed
+- memory or context retention policy
+- safety constraints and failure guards
+- logging and version tracking strategy
 
-### 消融维度
+### Step 5: Implementation and Verification
 
-应优先考虑以下消融：
+Must define:
 
-- 仅注释
-- 注释 + 代码上下文
-- 注释 + 代码上下文 + 历史上下文
-- 单轮修复 vs 多轮修复
-- 不同 Tool / Agent 配置
+- build, compile, test, or static-check requirements
+- success conditions for the task
+- regression-check strategy
+- debt-resolution checks when the task is repair-oriented
+- human review trigger conditions
+- failure-case and error-analysis logging strategy
 
-### 错误分类
+### Step 6: Evaluation Summary
 
-至少记录以下错误类型：
+Must capture:
 
-- 债务理解错误
-- 修复位置定位错误
-- 行为回归
-- 仅删除注释未真正修复
-- 修复不足
-- 过度修复
+- main result comparison
+- ablations
+- representative failures
+- regression risks
+- limitations
 
-### 最低验收线
+### Step 7: Writing Pack
 
-若任务是“SATD 自动修复”，则至少满足以下条件之一后，才可进入“有效结果”讨论：
+Must capture:
 
-- 目标项目通过对应的构建或编译验证
-- 目标测试集或回归集通过
-- 有独立证据表明债务约束被真正解除
-
-若上述条件均未满足，则结果最多可标注为原型输出或待验证候选方案，不得包装为“成功修复”。
-
----
-
-## 证据与可复现性规则
-
-所有结论必须明确标注类型：
-
-- **`[FACT]`** - 已验证事实：有实验数据、运行结果或可靠来源支撑
-- **`[HYPOTHESIS]`** - 工作假设：待验证的推测，必须说明验证计划
-- **`[PLAN]`** - 后续计划：尚未执行，必须说明后续动作
-
-### 必须记录
-
-- 模型版本与配置（如 temperature、top-p、seed）
-- Prompt / Tool / Agent 版本
-- 数据集或项目来源
-- 注释与代码对齐方式
-- 数据切分方式
-- 评测脚本、命令与汇总方法
-- 修复验证命令或脚本
-- 人工标注或人工评审协议
-- 计算成本与资源限制
-- 失败案例与错误分析记录
-
-### 禁止项
-
-- ❌ 编造引用、实验结果或对比基线
-- ❌ 伪造人工主观结论
-- ❌ 未标注来源的“常识性”陈述
-- ❌ 无法回溯到原始数据或原始运行记录的图表
-- ❌ 只展示成功样例而隐藏失败样例
+- paper, report, or slide draft
+- key figures or tables
+- links from claims back to experiment evidence
+- explicit `[PENDING]` or `[PLACEHOLDER]` items for anything not yet verified
 
 ---
 
-## 写作与展示规则
+## Agentic AI System Requirements
 
-### 论文、PPT 与报告约束
+Every serious study in this repository should make the following visible:
 
-- 每个结论必须能回溯到实验记录、脚本输出或可靠来源
-- 未完成验证的内容必须显式标注为 `[PENDING]` 或 `[PLACEHOLDER]`
-- 图表必须注明数据来源
-- 禁止夸大未完成工作
-- 区分“已完成验证”“正在验证”“仅有假设”三种状态
+- [ ] **System boundary** - what the system includes, excludes, and depends on externally
+- [ ] **Module responsibilities** - clear inputs, outputs, and boundaries for each module
+- [ ] **Prompt / Tool / Agent versioning** - exact versions for each evaluated configuration
+- [ ] **Retrieval and memory policy** - what context is fetched, retained, or discarded
+- [ ] **Action space** - what edits, tool calls, tests, or interactions the system may perform
+- [ ] **Evaluation protocol** - scripts, commands, metrics, and aggregation rules
+- [ ] **Regression set** - a stable set of checks or cases used to prevent behavior drift
+- [ ] **Error taxonomy** - how failures are grouped, counted, and tracked
+- [ ] **Reproduction conditions** - model, environment, data, dependencies, and configuration
 
-### 引用规范
+### Prohibited Practices
 
-- 所有引用必须真实存在
-- 引用内容必须与原文一致
-- 优先引用近 5 年研究，并保留必要的经典工作
-- 相关工作必须能支撑“研究缺口”而不是只做堆砌
-
-### 结论表达规范
-
-- `[FACT]` 只能由验证结果、真实文献或可追溯记录支撑
-- `[HYPOTHESIS]` 必须附带可证伪的验证路径
-- `[PLAN]` 必须说明下一步动作，而不是伪装成已有结果
-
----
-
-## Skills 与流程优先级
-
-本仓库当前可用的技能体系主要包括：
-
-- `superpowers/*`：用于工作流、执行、验证、规划等开发流程辅助
-- `research-paper-writer`：用于学术论文写作
-- `ppt-generator`：用于 PPT 生成
-
-### 优先级
-
-1. 用户显式要求与仓库规则
-2. 本 `AGENTS.md` 中的科研真实性、证据、复现与验证要求
-3. 具体 skill 的默认建议
-
-### 使用原则
-
-- skill 用于补充流程，不得覆盖科研真实性与可复现性要求
-- 若 skill 建议与本仓库的证据规则冲突，以本 `AGENTS.md` 为准
-- 若用户点名某个 skill，但当前仓库或环境不可用，必须显式说明并给出回退方案
+- ❌ changing a prompt, tool flow, or agent workflow without version tracking
+- ❌ claiming a repair or improvement without regression-aware verification
+- ❌ letting paper descriptions drift away from the actual evaluation scripts
+- ❌ packaging unexplained behavior as a research contribution or model capability
+- ❌ using undocumented magic parameters to influence results
+- ❌ hiding failure cases that materially change the interpretation of the work
 
 ---
 
-## 变更注释与验证
+## SATD Flagship Track
 
-以下内容的非平凡修改，必须补充 `Why / Scope / Verify`：
+SATD is the flagship domain in this repository because it tightly couples understanding, localization, repair, and verification in one realistic workflow.
 
-- 代码实现
-- Prompt 设计
-- 评测配置
-- 研究文档结构调整
+### What Counts as SATD
 
-### 注释格式
+SATD refers to comments where developers explicitly admit that the current implementation is temporary, incomplete, compromised, or in need of future repair or refactoring.
 
-代码、脚本或配置文件可使用：
+Typical SATD expressions include:
+
+- explicit debt comments such as `TODO`, `FIXME`, `HACK`, or `XXX`
+- natural-language comments that admit a temporary workaround or deferred repair
+- comments that acknowledge design compromise, performance compromise, compatibility compromise, missing tests, or incomplete implementation
+
+### What Does Not Automatically Count as SATD
+
+The following should not be treated as SATD unless the surrounding context clearly turns them into debt admission:
+
+- ordinary reminders or task assignments
+- feature wish lists
+- purely descriptive comments with no admission of compromise
+- documentation comments unrelated to implementation quality
+
+### Core SATD Subtasks
+
+- SATD detection and classification
+- SATD comment-to-code alignment
+- SATD repair generation
+- post-repair verification
+- deciding whether the debt was actually reduced or removed
+
+### SATD Repair Realism Constraints
+
+- Removing the SATD comment alone does **not** count as debt resolution.
+- Producing a plausible-looking patch without build, test, or behavior evidence does **not** count as a verified repair.
+- Silencing errors or suppressing warnings does **not** automatically count as fixing the debt.
+- If the patch only reduces the debt partially, label it as a partial resolution and explain the remaining risk.
+
+---
+
+## Evaluation and Reproducibility Protocol
+
+All conclusions must be explicitly labeled as one of:
+
+- **`[FACT]`** - verified by experiment results, execution logs, or reliable sources
+- **`[HYPOTHESIS]`** - a working assumption that still requires falsifiable validation
+- **`[PLAN]`** - future work that has not been executed yet
+
+### Required Recordkeeping
+
+You must record:
+
+- model name, version, and configuration such as `temperature`, `top-p`, and `seed`
+- prompt, tool, and agent workflow versions
+- dataset or project source
+- retrieval configuration and context-selection strategy
+- alignment strategy between comments and code when relevant
+- data split protocol
+- evaluation scripts, commands, and aggregation method
+- repair-verification commands or scripts
+- human annotation or review protocol when used
+- compute budget and resource constraints
+- failure cases and error-analysis notes
+
+### Forbidden Evidence Practices
+
+- ❌ fabricating citations, experiment results, baselines, or human-review outcomes
+- ❌ presenting undocumented common knowledge as sourced fact
+- ❌ using figures that cannot be traced to raw logs, scripts, or primary records
+- ❌ showing only successful examples while hiding representative failures
+
+### SATD Flagship Evaluation Protocol
+
+When the task is SATD repair, document whether the study covers the relevant baseline families:
+
+- rule-based or heuristic methods
+- plain prompting
+- retrieval-augmented prompting
+- agentic repair or multi-turn repair
+- the closest published SATD or repair method
+
+Report the metrics that make sense for the task, typically including:
+
+- repair success rate
+- compile or build pass rate
+- test pass rate
+- debt-resolution accuracy
+- edit cost or patch size
+- latency and cost
+- human-review agreement or acceptance rate when human evaluation is used
+
+Preferred ablations:
+
+- comment only
+- comment plus code context
+- comment plus code context plus historical context
+- single-turn repair versus multi-turn repair
+- different tool or agent configurations
+
+Minimum SATD error taxonomy:
+
+- debt-understanding failure
+- repair-location failure
+- behavioral regression
+- comment deletion without real repair
+- under-repair
+- over-repair
+
+Minimum acceptance bar for discussing a SATD repair as effective:
+
+- the target project passes the relevant build or compile checks, or
+- the relevant tests or regression suite pass, or
+- independent evidence shows that the debt constraint was actually removed
+
+If none of these conditions is met, the result is at most a candidate output or prototype patch, not a successful repair.
+
+---
+
+## Writing and Reporting Rules
+
+### Papers, Reports, and Slides
+
+- Every conclusion must trace back to experiment records, script output, or reliable sources.
+- Any unverified item must be labeled as `[PENDING]` or `[PLACEHOLDER]`.
+- Figures and tables must state their data source.
+- Do not exaggerate incomplete work.
+- Distinguish clearly between validated results, work in progress, and hypotheses.
+
+### Citation Rules
+
+- Every citation must be real.
+- The cited claim must match the source.
+- Prefer recent work when it is relevant, while retaining necessary classic references.
+- Related work must support the stated research gap rather than act as citation padding.
+
+### Claim Language Rules
+
+- Use `[FACT]` only when the statement is grounded in verified evidence.
+- Use `[HYPOTHESIS]` only when a concrete validation path exists.
+- Use `[PLAN]` only for work that has not yet been executed.
+
+---
+
+## Skills, Change Annotations, and Validation
+
+Available skill families in this repository include:
+
+- `superpowers/*` for workflow support such as planning, execution, verification, debugging, and review
+- `research-paper-writer` for paper drafting
+- `ppt-generator` for slide generation
+
+Priority order:
+
+1. direct user requests and repository rules
+2. the evidence, reproducibility, and validation contract in this document
+3. default skill suggestions
+
+Usage rules:
+
+- Skills supplement the workflow; they do not override research honesty or reproducibility requirements.
+- If a skill suggestion conflicts with this contract, follow this contract.
+- If the user names a skill that is unavailable in the environment, state that clearly and choose the nearest valid fallback.
+
+### Required `Why / Scope / Verify` Annotations
+
+Any non-trivial change to the following must include `Why / Scope / Verify`:
+
+- code implementation
+- prompt design
+- evaluation configuration
+- research document structure
+
+Use this format in code, scripts, or config files:
 
 ```text
-# Why: 解决什么问题？
-# Scope: 影响范围？
-# Verify: 如何验证正确性？
+# Why: What problem does this change solve?
+# Scope: What is affected?
+# Verify: How should this be validated?
 ```
 
-文档文件应使用：
+Use this format in documentation:
 
 ```html
-<!-- Why: 解决什么问题？ Scope: 影响范围？ Verify: 如何验证正确性？ -->
+<!-- Why: What problem does this change solve? Scope: What is affected? Verify: How should this be validated? -->
 ```
 
-### 修改后必须
+After modifying the work:
 
-- 执行相应验证
-- 汇报验证结果
-- 更新相关文档或实验记录
-- 若任务是 SATD 修复，补充 `SATD Repair Record`
-
----
-
-## 反模式清单
-
-### 绝对禁止
-
-- 🚫 **Demo 驱动结论**：只凭少量成功案例就宣称方法有效
-- 🚫 **基线缺失**：没有对比基线就报告“提升”
-- 🚫 **选择性报告**：只报告最好结果，隐藏失败
-- 🚫 **变量失控**：未控制变量就比较不同方法
-- 🚫 **包装工程**：把“工程堆料”包装成研究贡献
-- 🚫 **编造数据**：伪造实验结果、引用或人工评审结论
-- 🚫 **版本混乱**：修改 Prompt / 配置 / Tool / Agent 后不记录版本
-- 🚫 **不可复现**：无法提供复现条件、脚本或关键配置
-- 🚫 **伪修复**：只删除 SATD 注释而未真正处理债务
-
-### 警示信号
-
-- ⚠️ 无法解释的系统行为
-- ⚠️ 评测指标与研究目标不一致
-- ⚠️ 实验设置与论文描述不符
-- ⚠️ 消融实验缺失或敷衍
-- ⚠️ 错误分析流于表面
-- ⚠️ 债务是否解除没有独立验证依据
+- run the relevant validation
+- report the validation result
+- update the related documents or experiment records
+- add a `SATD Repair Record` when the task is SATD repair
 
 ---
 
-## 最小科研产物定义
+## Anti-Patterns
 
-### Research Brief（研究简报）
+### Hard No
+
+- 🚫 demo-driven conclusions from a few handpicked successes
+- 🚫 missing baselines when claiming improvement
+- 🚫 selective reporting that hides failures
+- 🚫 uncontrolled variables across compared methods
+- 🚫 engineering complexity packaged as a research contribution without analysis
+- 🚫 fabricated metrics, citations, or human-review judgments
+- 🚫 untracked prompt, tool, or agent changes
+- 🚫 irreproducible results with no path back to scripts or configuration
+- 🚫 fake repair claims based only on deleting a SATD comment
+
+### Warning Signs
+
+- ⚠️ system behavior cannot be explained but is still presented as capability
+- ⚠️ evaluation metrics do not match the research goal
+- ⚠️ experiment setup and paper description drift apart
+- ⚠️ ablations are missing or superficial
+- ⚠️ error analysis stays at a slogan level
+- ⚠️ debt removal has no independent verification evidence
+
+---
+
+## Minimal Research Artifacts
+
+### `Research Brief`
 
 ```yaml
-问题陈述: str
-主线归属: LLM-based Software Engineering
-SATD任务类型: detection | classification | alignment | repair | verification
-目标制品: comment | function | file | patch | benchmark | workflow | agent
-预期贡献形态: new_task | new_method | new_benchmark | new_system | empirical_finding
-成功标准: List[str]
-验证约束: List[str]
-时间估算: str
+problem_statement: str
+research_track: Agentic AI for Intelligent Software Engineering
+task_type: detection | classification | alignment | repair | verification | workflow | benchmark | agent_evaluation
+target_artifact: comment | function | file | patch | benchmark | workflow | agent
+intended_contribution: new_task | new_method | new_benchmark | new_system | empirical_finding
+success_criteria: List[str]
+validation_constraints: List[str]
+time_estimate: str
 ```
 
-### Experiment Plan（实验计划）
+### `Experiment Plan`
 
 ```yaml
-数据来源/项目来源: List[str]
-项目范围: str
-语言范围: List[str]
-基线方法: List[str]
-评测指标: List[str]
-修复动作空间: str
-验证脚本或命令: List[str]
-人工评审策略: str
-消融设计: List[str]
-资源需求: str
+data_or_project_sources: List[str]
+project_scope: str
+language_scope: List[str]
+baseline_families: List[str]
+evaluation_metrics: List[str]
+action_space: str
+verification_commands: List[str]
+human_review_strategy: str
+ablation_design: List[str]
+resource_requirements: str
 ```
 
-### Evaluation Summary（评估总结）
+### `Agent Workflow Spec`
 
 ```yaml
-主结果: Dict[str, float]
-消融结果: Dict[str, Any]
-失败分类: Dict[str, int]
-错误案例: List[str]
-回归风险: List[str]
-债务是否真正解除: str
-局限性: List[str]
-后续工作: List[str]
+system_boundary: str
+modules: List[str]
+input_context: List[str]
+retrieval_sources: List[str]
+tools: List[str]
+action_space: str
+memory_policy: str
+safety_guards: List[str]
+logging_and_versioning: List[str]
 ```
 
-### Writing Pack（写作包）
+### `Run Record`
 
 ```yaml
-文档类型: paper | ppt | report
-核心结论: List[str]
-关键图表: List[str]
-数据来源: Dict[str, str]
-结论到实验记录的回链: Dict[str, str]
-待补证据项: List[str]
+date: str
+model_and_config: Dict[str, Any]
+prompt_version: str
+tool_or_agent_version: str
+dataset_or_project: str
+task_instance: str
+commands_run: List[str]
+outputs_or_artifacts: List[str]
+verification_status: str
+notes: List[str]
 ```
 
-### SATD Repair Record
+### `Evaluation Summary`
 
 ```yaml
-SATD注释: str
-债务假设: str
-目标位置: str
-修复摘要: str
-验证状态: str
+main_results: Dict[str, float]
+ablation_results: Dict[str, Any]
+failure_counts: Dict[str, int]
+representative_failures: List[str]
+regression_risks: List[str]
+resolution_status: str
+limitations: List[str]
+next_steps: List[str]
+```
+
+### `Writing Pack`
+
+```yaml
+document_type: paper | ppt | report
+core_claims: List[str]
+key_figures: List[str]
+data_sources: Dict[str, str]
+claim_to_evidence_links: Dict[str, str]
+pending_evidence_items: List[str]
+```
+
+### `SATD Repair Record`
+
+```yaml
+satd_comment: str
+debt_hypothesis: str
+target_location: str
+repair_summary: str
+verification_status: str
+remaining_risk: str
 ```
 
 ---
 
-## 验收场景
+## Acceptance Scenarios
 
-- 场景：用户要求做 SATD 相关文献调研。
-  预期：Agent 自动进入 SATD-first 的 LLM4SE 研究流程，明确 gap、定位与真实引用，不允许编造论文。
-- 场景：用户要求设计 SATD 自动修复实验。
-  预期：Agent 必须明确数据、基线、指标、消融、复现条件，不能只给 demo 式方案。
-- 场景：用户要求修复某个 SATD 实例。
-  预期：Agent 必须产出 `SATD Repair Record`，执行验证命令，并禁止在无证据时宣称修复完成。
-- 场景：用户要求撰写论文或 PPT。
-  预期：Agent 继续遵守 `[FACT] / [HYPOTHESIS] / [PLAN]` 分级，未知结果标记为 `[PENDING]` 或 `[PLACEHOLDER]`，所有结论可回链到实验或来源。
-- 场景：用户提出与 SATD 无关但仍属于大模型软件工程的问题。
-  预期：文档仍支持处理，但 Agent 应明确说明这不是本仓库的默认研究主线。
-
----
-
-## 协作契约
-
-### Agent 承诺
-
-- 遵守上述所有规则
-- 显式声明工作模式
-- 不编造数据或引用
-- 区分事实、假设和计划
-- 修改后执行验证并报告结果
-
-### 用户承诺
-
-- 提供必要的上下文和反馈
-- 验证关键结论
-- 审查最终产出
-- 及时纠正偏差
+- Scenario: the user asks for SATD literature review.
+  Expectation: the agent follows the Agentic AI research workflow, identifies a real gap, and cites real papers only.
+- Scenario: the user asks to design a SATD repair experiment.
+  Expectation: the agent specifies data sources, baselines, metrics, ablations, and reproducibility conditions rather than giving a demo-only sketch.
+- Scenario: the user asks to repair a SATD instance.
+  Expectation: the agent produces a `SATD Repair Record`, runs verification, and does not claim success without evidence.
+- Scenario: the user asks to design an agent workflow for intelligent software engineering.
+  Expectation: the agent defines system boundary, tools, retrieval, safety guards, versioning, and evaluation before making strong claims.
+- Scenario: the user asks to write a paper or slides.
+  Expectation: the agent preserves `[FACT] / [HYPOTHESIS] / [PLAN]`, marks unknowns as `[PENDING]` or `[PLACEHOLDER]`, and keeps claims traceable to evidence.
+- Scenario: the user asks a broader intelligent software engineering question outside SATD.
+  Expectation: the agent may proceed, but should state that the task is outside the flagship SATD track while keeping the same validation discipline.
 
 ---
 
-## 版本历史
+## Collaboration Commitments
 
-- **v1.0** (2026-03-20): 初始版本，覆盖科研流程、双主线规则、仓库治理
-- **v1.1** (2026-03-20): 重构为 SATD-first 科研协作契约，强化 LLM4SE 约束、SATD 自动修复评测协议与最小产物定义
+### Agent Commitments
+
+- follow the rules in this contract
+- declare the current work mode explicitly
+- avoid fabricating data, citations, or evidence
+- distinguish facts, hypotheses, and plans
+- run validation and report the outcome after meaningful changes
+
+### User Commitments
+
+- provide the necessary context and feedback
+- verify important conclusions when human judgment is required
+- review the resulting artifacts
+- correct drift when the work moves away from the intended research goal
 
 ---
 
-*本文档同时约束 AI Agent 和人类研究者，目标是产出可验证、可复现、有价值的 SATD 自动修复研究。*
+## Version History
+
+- **v1.0** (2026-03-20): Initial version covering research workflow, repository governance, and collaboration rules.
+- **v1.1** (2026-03-20): SATD-first rewrite with stronger LLM-based software engineering and SATD repair evaluation rules.
+- **v1.2** (2026-03-21): English rewrite with Agentic AI-first positioning while keeping SATD repair as the flagship benchmark and validation scenario.
+
+---
+
+*This contract applies to both AI agents and human researchers. The goal is to produce research artifacts that are useful, reproducible, evidence-backed, and honest about their limits.*
