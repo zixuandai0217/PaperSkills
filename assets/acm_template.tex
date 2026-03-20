@@ -1,0 +1,197 @@
+\documentclass[sigconf]{acmart}
+
+% Copyright information
+\setcopyright{acmcopyright}
+\acmYear{2025}
+\acmConference[CONF'25]{Conference Name}{Month Day-Day, 2025}{City, Country}
+\acmBooktitle{Conference Name (CONF'25), Month Day-Day, 2025, City, Country}
+\acmDOI{xx.xxxx/xxxxxxx.xxxxxx}
+
+% Packages
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+% Document starts
+\begin{document}
+
+% Title and subtitle
+\title{Title of Your Research Paper}
+\subtitle{Optional Subtitle}
+
+% Author information
+\author{Author Name}
+\affiliation{
+    \institution{Institution Name}
+    \department{Department Name}
+    \city{City}
+    \country{Country}
+}
+\email{author@institution.edu}
+
+\author{Second Author}
+\affiliation{
+    \institution{Institution Name}
+    \department{Department Name}
+    \city{City}
+    \country{Country}
+}
+\email{second@institution.edu}
+
+% Abstract
+\begin{abstract}
+This is the abstract of your paper. It should be 150-200 words and summarize the 
+purpose, methods, results, and conclusions of your research. The abstract should 
+be self-contained and readable without the full paper. Include specific metrics 
+and quantitative results where possible.
+\end{abstract}
+
+% CCS Concepts
+\begin{CCSXML}
+<ccs2012>
+   <concept>
+       <concept_id>10010147.10010178</concept_id>
+       <concept_desc>Computing methodologies</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+   <concept>
+       <concept_id>10010147.10010178.10010224</concept_id>
+       <concept_desc>Computing methodologies~Computer vision</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+ </ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Computing methodologies}
+\ccsdesc[500]{Computing methodologies~Computer vision}
+
+% Keywords
+\keywords{keyword1, keyword2, keyword3, keyword4}
+
+% Make title
+\maketitle
+
+% Section 1: Introduction
+\section{Introduction}
+\label{sec:introduction}
+
+Start with a compelling real-world problem or motivation. Build from general to 
+specific context. Clearly state the research gap and your contributions.
+
+The main contributions of this paper are:
+\begin{itemize}
+    \item Contribution 1: Description of your first contribution.
+    \item Contribution 2: Description of your second contribution.
+    \item Contribution 3: Description of your third contribution.
+\end{itemize}
+
+The remainder of this paper is organized as follows. Section~\ref{sec:related} 
+reviews related work. Section~\ref{sec:method} describes the proposed method. 
+Section~\ref{sec:experiments} presents experimental results. 
+Section~\ref{sec:conclusion} concludes the paper.
+
+% Section 2: Related Work
+\section{Related Work}
+\label{sec:related}
+
+Review relevant literature and position your work. Group related work by theme 
+or approach. Compare explicitly: "Unlike [X] which focuses on Y, our approach 
+addresses Z..."
+
+% Section 3: Methodology
+\section{Methodology}
+\label{sec:method}
+
+Describe your proposed method in detail. Include architecture diagrams, 
+algorithms, and design rationale.
+
+\subsection{Architecture Overview}
+
+Provide a high-level description of your system or method.
+
+\subsection{Key Components}
+
+Describe each component in detail.
+
+\subsection{Algorithm}
+
+Present key algorithms using pseudocode:
+
+\begin{algorithm}
+\caption{Algorithm Name}
+\label{alg:algorithm}
+\begin{algorithmic}[1]
+\REQUIRE Input parameters
+\ENSURE Output results
+\STATE Step 1
+\STATE Step 2
+\STATE Step 3
+\RETURN result
+\end{algorithmic}
+\end{algorithm}
+
+% Section 4: Experiments
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Experimental Setup}
+
+Describe datasets, evaluation metrics, baselines, and implementation details.
+
+\subsection{Results}
+
+Present quantitative results in tables:
+
+\begin{table}[htbp]
+\caption{Performance Comparison}
+\label{tab:results}
+\centering
+\begin{tabular}{@{}llll@{}}
+\toprule
+Method & Metric 1 & Metric 2 & Metric 3 \\
+\midrule
+Baseline & 0.80 & 0.75 & 0.82 \\
+Proposed & \textbf{0.91} & \textbf{0.89} & \textbf{0.92} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Analysis}
+
+Provide ablation studies, error analysis, and qualitative examples.
+
+% Section 5: Conclusion
+\section{Conclusion}
+\label{sec:conclusion}
+
+Summarize your contributions and their significance. Discuss limitations and 
+future work.
+
+% Acknowledgments (optional)
+\begin{acks}
+Thank funding sources, collaborators, etc.
+\end{acks}
+
+% References
+\bibliographystyle{ACM-Reference-Format}
+% \bibliography{references}
+
+% Example manual references (or use .bib file)
+\begin{thebibliography}{1}
+
+\bibitem{example1}
+A. Author and B. Author. Year. Title of paper. In \emph{Proceedings of 
+Conference Name} (CONF'YY). ACM, New York, NY, USA, 123--456. 
+\url{https://doi.org/xx.xxxx/xxxxx}
+
+\bibitem{example2}
+C. Author. Year. Title of journal article. \emph{Journal Name} X, Y (Month 
+Year), 123--456. \url{https://doi.org/xx.xxxx/xxxxx}
+
+\end{thebibliography}
+
+\end{document}

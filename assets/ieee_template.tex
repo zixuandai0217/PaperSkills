@@ -1,0 +1,172 @@
+\documentclass[10pt,conference]{IEEEtran}
+
+% Packages
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+% Correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\begin{document}
+
+% Paper title
+\title{Title of Your Research Paper}
+
+% Author names and affiliations
+\author{
+\IEEEauthorblockN{Author Name}
+\IEEEauthorblockA{
+    Department Name\\
+    Institution Name\\
+    City, Country\\
+    email@institution.edu}
+\and
+\IEEEauthorblockN{Second Author}
+\IEEEauthorblockA{
+    Department Name\\
+    Institution Name\\
+    City, Country\\
+    email@institution.edu}
+}
+
+% Make the title area
+\maketitle
+
+% Abstract
+\begin{abstract}
+This is the abstract of your paper. It should be 150-250 words and summarize the 
+purpose, methods, results, and conclusions of your research. The abstract should 
+be self-contained and readable without the full paper. Include specific metrics 
+and quantitative results where possible.
+\end{abstract}
+
+% Keywords
+\begin{IEEEkeywords}
+keyword1, keyword2, keyword3, keyword4, keyword5
+\end{IEEEkeywords}
+
+\IEEEpeerreviewmaketitle
+
+% Section 1: Introduction
+\section{Introduction}
+\label{sec:introduction}
+
+Start with a compelling real-world problem or motivation. Build from general to 
+specific context. Clearly state the research gap and your contributions.
+
+The main contributions of this paper are:
+\begin{itemize}
+    \item Contribution 1: Description of your first contribution.
+    \item Contribution 2: Description of your second contribution.
+    \item Contribution 3: Description of your third contribution.
+\end{itemize}
+
+The remainder of this paper is organized as follows. Section \ref{sec:related} 
+reviews related work. Section \ref{sec:method} describes the proposed method. 
+Section \ref{sec:experiments} presents experimental results. Section 
+\ref{sec:conclusion} concludes the paper.
+
+% Section 2: Related Work
+\section{Related Work}
+\label{sec:related}
+
+Review relevant literature and position your work. Group related work by theme 
+or approach. Compare explicitly: "Unlike [X] which focuses on Y, our approach 
+addresses Z..."
+
+% Section 3: Methodology
+\section{Methodology}
+\label{sec:method}
+
+Describe your proposed method in detail. Include architecture diagrams, 
+algorithms, and design rationale.
+
+\subsection{Architecture Overview}
+
+Provide a high-level description of your system or method.
+
+\subsection{Key Components}
+
+Describe each component in detail.
+
+\subsection{Algorithm}
+
+Present key algorithms using pseudocode:
+
+\begin{algorithm}
+\caption{Algorithm Name}
+\begin{algorithmic}[1]
+\REQUIRE Input parameters
+\ENSURE Output results
+\STATE Step 1
+\STATE Step 2
+\STATE Step 3
+\RETURN result
+\end{algorithmic}
+\end{algorithm}
+
+% Section 4: Experiments
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Experimental Setup}
+
+Describe datasets, evaluation metrics, baselines, and implementation details.
+
+\subsection{Results}
+
+Present quantitative results in tables:
+
+\begin{table}[htbp]
+\caption{Performance Comparison}
+\label{tab:results}
+\centering
+\begin{tabular}{@{}llll@{}}
+\toprule
+Method & Metric 1 & Metric 2 & Metric 3 \\
+\midrule
+Baseline & 0.80 & 0.75 & 0.82 \\
+Proposed & \textbf{0.91} & \textbf{0.89} & \textbf{0.92} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Analysis}
+
+Provide ablation studies, error analysis, and qualitative examples.
+
+% Section 5: Conclusion
+\section{Conclusion}
+\label{sec:conclusion}
+
+Summarize your contributions and their significance. Discuss limitations and 
+future work.
+
+% Acknowledgments (optional)
+% \section*{Acknowledgments}
+% Thank funding sources, collaborators, etc.
+
+% References
+\bibliographystyle{IEEEtran}
+% \bibliography{references}
+
+% Example manual references (or use .bib file)
+\begin{thebibliography}{1}
+
+\bibitem{example1}
+A. Author and B. Author, ``Title of paper,'' in \emph{Proc. Conference Name}, 
+Year, pp. 123--456.
+
+\bibitem{example2}
+C. Author, ``Title of journal article,'' \emph{Journal Name}, vol. X, no. Y, 
+pp. 123--456, Month Year.
+
+\end{thebibliography}
+
+\end{document}
