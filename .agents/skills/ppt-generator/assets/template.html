@@ -4,15 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>演示文稿</title>
+  <!-- Why: 让 PPT Generator 在论文汇报场景下默认输出 16:9 宽屏，并支持亮色与暗色双主题。 Scope: 更新模板布局、颜色变量和示例页面结构，不改变其单文件 HTML 演示的基本交互方式。 Verify: 检查模板默认类名启用宽屏暗色主题，且存在 theme-dark/theme-light 两套样式变量与 16:9 布局定义。 -->
   
   <!-- TailwindCSS CDN -->
   <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/tailwindcss/3.0.23/tailwind.min.js"></script>
   
   <!-- 字体 -->
+  <link href="https://s1.hdslb.com/bfs/static/jinkela/long/font/regular.css" rel="stylesheet">
   <link href="https://fonts.loli.net/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@300;400;700;900&display=swap" rel="stylesheet">
   
   <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg-soft: #111827;
+      --text: #ffffff;
+      --muted: #9ca3af;
+      --panel: rgba(255, 255, 255, 0.06);
+      --line: rgba(255, 255, 255, 0.08);
+      --accent-1: #60a5fa;
+      --accent-2: #8b5cf6;
+      --accent-3: #22d3ee;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -20,10 +34,34 @@
     }
     
     body {
-      font-family: 'Noto Sans SC', 'Inter', sans-serif;
-      background: #000;
-      color: #fff;
+      font-family: 'HarmonyOS Sans SC', 'Noto Sans SC', 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
       overflow: hidden;
+    }
+
+    body.theme-dark {
+      --bg: #0a0a0a;
+      --bg-soft: #111827;
+      --text: #ffffff;
+      --muted: #9ca3af;
+      --panel: rgba(255, 255, 255, 0.06);
+      --line: rgba(255, 255, 255, 0.08);
+      --accent-1: #60a5fa;
+      --accent-2: #8b5cf6;
+      --accent-3: #22d3ee;
+    }
+
+    body.theme-light {
+      --bg: #f7f9fc;
+      --bg-soft: #eef3ff;
+      --text: #0f172a;
+      --muted: #475569;
+      --panel: rgba(255, 255, 255, 0.72);
+      --line: rgba(15, 23, 42, 0.08);
+      --accent-1: #2563eb;
+      --accent-2: #7c3aed;
+      --accent-3: #0891b2;
     }
     
     /* 幻灯片容器 */
@@ -33,27 +71,28 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #0a0a0a;
+      background:
+        radial-gradient(circle at top, rgba(96, 165, 250, 0.10), transparent 32%),
+        radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.10), transparent 34%),
+        linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 100%);
     }
     
     /* 单个幻灯片 */
     .slide {
-      width: 100%;
-      height: 100%;
-      max-width: 450px;
-      max-height: 800px;
-      aspect-ratio: 9/16;
+      width: 100vw;
+      height: 100vh;
+      aspect-ratio: 16 / 9;
       position: absolute;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
+      align-items: stretch;
+      justify-content: space-between;
+      padding: clamp(24px, 4vw, 56px) clamp(28px, 5vw, 72px);
       opacity: 0;
       transform: translateX(100%);
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       overflow: hidden;
-      background: linear-gradient(180deg, #0a0a0a 0%, #000000 100%);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--bg-soft) 90%, transparent) 0%, color-mix(in srgb, var(--bg) 96%, transparent) 100%);
     }
     
     .slide.active {
@@ -78,7 +117,7 @@
     .light-spot-1 {
       width: 300px;
       height: 300px;
-      background: #3b82f6;
+      background: var(--accent-1);
       top: -100px;
       right: -100px;
       animation: float1 20s ease-in-out infinite;
@@ -87,7 +126,7 @@
     .light-spot-2 {
       width: 250px;
       height: 250px;
-      background: #8b5cf6;
+      background: var(--accent-2);
       bottom: -80px;
       left: -80px;
       animation: float2 25s ease-in-out infinite;
@@ -96,7 +135,7 @@
     .light-spot-3 {
       width: 200px;
       height: 200px;
-      background: #06b6d4;
+      background: var(--accent-3);
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -125,8 +164,10 @@
     .slide-content {
       position: relative;
       z-index: 10;
-      text-align: center;
+      text-align: left;
       width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
     }
     
     /* 进度条 */
@@ -144,33 +185,128 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.3);
+      background: color-mix(in srgb, var(--text) 30%, transparent);
       cursor: pointer;
       transition: all 0.3s;
     }
     
     .progress-dot.active {
-      background: #fff;
+      background: var(--text);
       transform: scale(1.3);
     }
     
     .progress-dot:hover {
-      background: rgba(255,255,255,0.6);
+      background: color-mix(in srgb, var(--text) 60%, transparent);
     }
     
     /* 页码 */
     .page-number {
       position: fixed;
-      bottom: 50px;
-      left: 50%;
-      transform: translateX(-50%);
+      right: 28px;
+      bottom: 24px;
       font-size: 0.875rem;
-      color: rgba(255,255,255,0.4);
+      color: color-mix(in srgb, var(--text) 50%, transparent);
       z-index: 100;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+    }
+
+    .eyebrow {
+      font-size: 0.875rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .title {
+      font-size: clamp(3rem, 6vw, 5rem);
+      line-height: 1.05;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 1rem;
+      max-width: 12ch;
+    }
+
+    .subtitle {
+      font-size: clamp(1.25rem, 2vw, 1.75rem);
+      line-height: 1.5;
+      color: var(--muted);
+      max-width: 56ch;
+    }
+
+    .panel {
+      display: grid;
+      gap: 0.75rem;
+      padding: 1.25rem 1.25rem;
+      border-radius: 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+    }
+
+    .panel h3 {
+      font-size: 1.25rem;
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .panel p {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    .hero-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(340px, 0.75fr);
+      gap: 28px;
+      align-items: center;
+      min-height: calc(100vh - 140px);
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 16px;
+    }
+
+    .cover-meta {
+      display: grid;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
+    }
+
+    .cover-meta-line {
+      font-size: 1.08rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    @media (max-width: 980px) {
+      .slide {
+        padding: 24px;
+      }
+
+      .hero-layout {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .slide-content {
+        max-width: none;
+      }
+
+      .page-number {
+        right: 16px;
+        bottom: 16px;
+      }
     }
   </style>
 </head>
-<body>
+<body class="theme-dark">
   <div class="slides-container">
     
     <!-- 幻灯片 1: 封面页 -->
@@ -178,8 +314,32 @@
       <div class="light-spot light-spot-1"></div>
       <div class="light-spot light-spot-2"></div>
       <div class="slide-content">
-        <h1 class="text-5xl font-black mb-6 leading-tight">主标题</h1>
-        <p class="text-xl font-light text-gray-400">副标题</p>
+        <div class="hero-layout">
+          <div>
+            <div class="eyebrow">Paper Reading</div>
+            <h1 class="title">主标题</h1>
+            <div class="cover-meta">
+              <div class="cover-meta-line">2026 · NeurIPS / Nature / arXiv</div>
+              <div class="cover-meta-line">作者 A · 作者 B · 作者 C</div>
+              <div class="cover-meta-line">第一作者机构：XXX University / XXX Lab</div>
+            </div>
+            <p class="subtitle">副标题 / 一句话概括这篇论文想解决什么问题、提出什么方法。</p>
+          </div>
+          <div class="hero-side">
+            <div class="panel">
+              <h3>研究背景</h3>
+              <p>用 1~2 句话讲清楚问题、场景与现有方法的局限。</p>
+            </div>
+            <div class="panel">
+              <h3>研究方法</h3>
+              <p>用 1~2 句话说明核心机制、模块或方法主张。</p>
+            </div>
+            <div class="panel">
+              <h3>实验结果</h3>
+              <p>用 1 句话点出最值得记住的提升幅度或亮点结论。</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     
@@ -188,7 +348,8 @@
       <div class="light-spot light-spot-2"></div>
       <div class="light-spot light-spot-3"></div>
       <div class="slide-content">
-        <h1 class="text-4xl font-black leading-tight">
+        <div class="eyebrow">研究背景</div>
+        <h1 class="title">
           冲击力标题<br>第二行
         </h1>
       </div>
@@ -199,9 +360,10 @@
       <div class="light-spot light-spot-1"></div>
       <div class="light-spot light-spot-3"></div>
       <div class="slide-content">
-        <span class="text-6xl text-gray-600 block mb-2">"</span>
-        <p class="text-2xl font-bold mb-6">金句内容</p>
-        <span class="text-lg font-light text-gray-500">— 来源</span>
+        <div class="eyebrow">分析讨论</div>
+        <span class="text-6xl block mb-2" style="color: var(--muted)">"</span>
+        <p class="text-2xl font-bold mb-6" style="color: var(--text)">金句内容</p>
+        <span class="text-lg font-light" style="color: var(--muted)">— 来源</span>
       </div>
     </div>
     
@@ -211,8 +373,9 @@
       <div class="light-spot light-spot-2"></div>
       <div class="light-spot light-spot-3"></div>
       <div class="slide-content">
-        <h1 class="text-3xl font-bold mb-8">总结金句</h1>
-        <p class="text-xl font-light text-gray-400">行动号召</p>
+        <div class="eyebrow">Q&A</div>
+        <h1 class="title" style="max-width:none;">Q&amp;A</h1>
+        <p class="subtitle">论文标题、作者、致谢或讨论引导可放在这一页。</p>
       </div>
     </div>
     

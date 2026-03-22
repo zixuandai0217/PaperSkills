@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XSKILL | 组会汇报</title>
+  <!-- Why: 当前页面需要保留亮色 PPT 风格，但动效不应喧宾夺主，因此将展示收口为静态版式加基础翻页过渡。 Scope: 仅修改 XSKILL/index.html 的单文件样式与轻量交互，不改动演示内容结构与翻页逻辑。 Verify: 在浏览器打开后检查 11 页内容、无暗色切换控件、无漂浮光斑动画、翻页仅保留基础淡入切换、键盘翻页与页码同步。 -->
+  <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/tailwindcss/3.0.23/tailwind.min.js"></script>
+  <link href="https://s1.hdslb.com/bfs/static/jinkela/long/font/regular.css" rel="stylesheet">
+  <link href="https://fonts.loli.net/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #3f69df;
+      --accent-strong: #234bc7;
+      --accent-soft: #eef4ff;
+      --accent-soft-alt: #f5f9ff;
+      --sky: #77c2ff;
+      --cyan: #58adf0;
+      --violet: #8fa8f4;
+      --green: #1ba26f;
+      --red: #d96172;
+      --yellow: #d59a22;
+      --text: #495a75;
+      --text-strong: #16233b;
+      --muted: #5f708b;
+      --muted-soft: #70819c;
+      --line: rgba(37, 77, 203, 0.10);
+      --line-strong: rgba(37, 77, 203, 0.18);
+      --surface: rgba(255, 255, 255, 0.98);
+      --surface-soft: rgba(247, 250, 255, 0.98);
+      --surface-ghost: rgba(244, 248, 255, 0.88);
+      --table-bg: rgba(255, 255, 255, 0.96);
+      --table-border: rgba(35, 63, 123, 0.12);
+      --footer-color: rgba(62, 78, 105, 0.76);
+      --page-chip-bg: rgba(255, 255, 255, 0.94);
+      --page-chip-color: #62738e;
+      --hero-gradient: linear-gradient(135deg, #2148bf 0%, #4b73e5 58%, #47afd9 100%);
+      --card-shadow: 0 16px 36px rgba(104, 122, 156, 0.12);
+      --canvas-shadow: 0 20px 44px rgba(94, 110, 141, 0.16);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: "HarmonyOS Sans SC", "Noto Sans SC", "Inter", sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      background:
+        radial-gradient(circle at left top, rgba(77, 116, 226, 0.12), transparent 30%),
+        radial-gradient(circle at 86% 14%, rgba(106, 190, 255, 0.16), transparent 24%),
+        linear-gradient(180deg, #f7f9fc 0%, #eef3fa 52%, #e8eef8 100%);
+    }
+
+    .app {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(18px, 2.3vw, 28px);
+      background: transparent;
+      opacity: 0;
+      transition: opacity 0.22s ease;
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 2;
+    }
+
+    .slide.prev {
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .slide::before {
+      content: none;
+    }
+
+    .spot {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(112px);
+      opacity: 0.34;
+      pointer-events: none;
+      mix-blend-mode: normal;
+    }
+
+    .spot.blue {
+      width: 260px;
+      height: 260px;
+      top: -12px;
+      right: 26px;
+      background: rgba(63, 105, 223, 0.22);
+    }
+
+    .spot.violet {
+      width: 220px;
+      height: 220px;
+      bottom: 10px;
+      left: 18px;
+      background: rgba(143, 168, 244, 0.20);
+    }
+
+    .spot.cyan {
+      width: 210px;
+      height: 210px;
+      top: 34%;
+      left: 54%;
+      background: rgba(88, 173, 240, 0.18);
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      gap: 18px;
+      padding: 34px 38px 28px;
+      border-radius: 36px;
+      overflow: hidden;
+      background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
+      border: 1px solid rgba(37, 77, 203, 0.08);
+      box-shadow: var(--canvas-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.94);
+    }
+
+    .content::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top right, rgba(63, 105, 223, 0.08), transparent 24%),
+        radial-gradient(circle at left bottom, rgba(116, 194, 255, 0.08), transparent 22%);
+      pointer-events: none;
+    }
+
+    .content > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: #7a89a0;
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(63, 105, 223, 0.08);
+      border: 1px solid rgba(63, 105, 223, 0.14);
+      color: var(--accent-strong);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      width: fit-content;
+      box-shadow: 0 8px 20px rgba(102, 121, 156, 0.08);
+    }
+
+    .pill::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(63, 105, 223, 0.12);
+    }
+
+    h1, h2, h3 {
+      line-height: 1.12;
+      letter-spacing: -0.045em;
+    }
+
+    h1 {
+      font-size: clamp(58px, 6.8vw, 90px);
+      font-weight: 800;
+      color: var(--accent-strong);
+    }
+
+    h2 {
+      font-size: clamp(36px, 4.2vw, 58px);
+      font-weight: 800;
+      color: var(--text-strong);
+    }
+
+    h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    p, li, td, th {
+      font-size: 16px;
+      line-height: 1.62;
+      color: var(--muted);
+    }
+
+    .hero-copy {
+      font-size: 23px;
+      line-height: 1.55;
+      color: var(--muted-soft);
+      max-width: 54ch;
+    }
+
+    .quote {
+      font-size: 40px;
+      line-height: 1.22;
+      color: var(--text-strong);
+      font-weight: 800;
+      max-width: 18ch;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .accent {
+      color: var(--text-strong);
+      background: var(--hero-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(245, 248, 255, 0.96) 100%);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 20px 20px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .card strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(63, 105, 223, 0.10);
+      color: var(--accent-strong);
+      border: 1px solid rgba(63, 105, 223, 0.15);
+      width: fit-content;
+    }
+
+    .claim-fact {
+      color: #19855f;
+      background: rgba(28, 162, 111, 0.10);
+      border-color: rgba(28, 162, 111, 0.18);
+    }
+
+    .claim-plan {
+      color: #b07a11;
+      background: rgba(213, 154, 34, 0.12);
+      border-color: rgba(213, 154, 34, 0.18);
+    }
+
+    .stat {
+      padding: 18px 16px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 246, 255, 0.96) 100%);
+      border: 1px solid var(--line);
+      text-align: left;
+      box-shadow: var(--card-shadow);
+    }
+
+    .stat .number {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--accent-strong);
+      line-height: 1;
+    }
+
+    .stat .label {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .mini {
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 2px;
+    }
+
+    .mini-list li {
+      list-style: none;
+      position: relative;
+      padding-left: 14px;
+    }
+
+    .mini-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--cyan), var(--violet));
+    }
+
+    .compare-card {
+      display: grid;
+      gap: 10px;
+      padding: 20px 18px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(248, 251, 255, 0.98) 0%, rgba(241, 246, 255, 0.98) 100%);
+      border: 1px solid var(--line);
+      box-shadow: var(--card-shadow);
+    }
+
+    .phase-flow,
+    .step-flow {
+      display: grid;
+      gap: 10px;
+    }
+
+    .phase-box,
+    .step-box {
+      position: relative;
+      padding: 18px 18px 18px 20px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(245, 248, 255, 0.96) 100%);
+      border: 1px solid var(--line);
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+    }
+
+    .phase-box::before,
+    .step-box::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, var(--accent), var(--sky));
+    }
+
+    .arrow-down {
+      text-align: center;
+      font-size: 18px;
+      color: rgba(35, 75, 199, 0.52);
+    }
+
+    .loop {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .loop-mid {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(245, 248, 255, 0.96);
+      border: 1px solid var(--line);
+      color: var(--accent-strong);
+      font-size: 18px;
+      box-shadow: var(--card-shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-spacing: 0;
+      font-size: 12px;
+      overflow: hidden;
+      border-radius: 18px;
+      background: var(--table-bg);
+      border: 1px solid var(--table-border);
+      box-shadow: var(--card-shadow);
+    }
+
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--table-border);
+    }
+
+    th {
+      color: var(--accent-strong);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      background: rgba(239, 244, 255, 0.92);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(248, 251, 255, 0.88);
+    }
+
+    .gain {
+      color: #18855f;
+      font-weight: 700;
+    }
+
+    .warning {
+      color: #bb780d;
+      font-weight: 600;
+    }
+
+    .footer-note {
+      font-size: 13px;
+      color: var(--footer-color);
+      letter-spacing: 0.02em;
+    }
+
+    .hero-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+      gap: 28px;
+      align-items: stretch;
+      flex: 1;
+    }
+
+    .hero-main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    .hero-side {
+      display: grid;
+      align-content: center;
+      gap: 14px;
+    }
+
+    .hero-side h3 {
+      font-size: 18px;
+    }
+
+    .hero-side p {
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .cover-meta {
+      display: grid;
+      gap: 6px;
+      margin-top: 2px;
+      margin-bottom: 4px;
+    }
+
+    .cover-meta-line {
+      font-size: 16px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .page-corner {
+      position: fixed;
+      right: 32px;
+      bottom: 24px;
+      z-index: 12;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--page-chip-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--page-chip-color);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 12px 26px rgba(101, 120, 152, 0.14);
+    }
+
+    .qna-slide .content {
+      position: relative;
+    }
+
+    .qna-center {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      width: min(1100px, calc(100vw - 160px));
+      text-align: center;
+    }
+
+    .qna-center .footer-note {
+      font-size: 18px;
+      line-height: 1.55;
+      color: rgba(83, 101, 130, 0.86);
+    }
+
+    @media (max-width: 980px) {
+      .slide {
+        padding: 14px;
+      }
+
+      .content {
+        padding: 28px 24px 22px;
+        border-radius: 28px;
+      }
+
+      .hero-layout,
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: clamp(42px, 8vw, 72px);
+      }
+
+      h2 {
+        font-size: clamp(28px, 5vw, 40px);
+      }
+
+      .quote {
+        font-size: 30px;
+        max-width: none;
+      }
+
+      .hero-copy {
+        font-size: 20px;
+        max-width: none;
+      }
+
+      .page-corner {
+        right: 18px;
+        bottom: 16px;
+        font-size: 12px;
+      }
+
+      .cover-meta-line {
+        font-size: 14px;
+      }
+
+      .qna-center {
+        width: min(92vw, 760px);
+        gap: 16px;
+      }
+
+      .qna-center .footer-note {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <main class="deck" aria-label="XSKILL 组会汇报幻灯片">
+      <section class="slide active" data-title="封面">
+        <div class="spot blue"></div>
+        <div class="spot violet"></div>
+        <div class="content">
+          <div class="topline">
+            <span>Paper Reading</span>
+            <span>Group Meeting</span>
+          </div>
+          <div class="hero-layout">
+            <div class="hero-main">
+              <span class="pill">Multimodal Agents</span>
+              <div class="flex flex-col gap-4">
+                <h1>XSKILL</h1>
+                <p class="quote">Continual Learning from Experience and Skills in Multimodal Agents</p>
+                <div class="cover-meta">
+                  <div class="cover-meta-line">发表时间：March 16, 2026</div>
+                  <div class="cover-meta-line">发表平台：arXiv Preprint</div>
+                  <div class="cover-meta-line">作者：Guanyu Jiang · Zhaochen Su · Xiaoye Qu · Yi R. (May) Fung</div>
+                  <div class="cover-meta-line">第一作者机构：Hong Kong University of Science and Technology / Zhejiang University</div>
+                </div>
+                <p class="hero-copy">一篇关于多模态 agent 如何<strong>不改参数</strong>，却能持续从轨迹中学会更好用工具的论文。</p>
+              </div>
+            </div>
+            <div class="hero-side">
+              <div class="card">
+                <span class="tag">研究背景</span>
+                <h3 class="mt-3">为什么值得讲</h3>
+                <p class="mt-2">多模态 agent 已能用工具，但依然缺少稳定的跨任务成长机制。</p>
+              </div>
+              <div class="card">
+                <span class="tag">研究方法</span>
+                <h3 class="mt-3">怎么做</h3>
+                <p class="mt-2">用 experience + skill 双流知识，把轨迹经验变成可检索、可适配的外部能力。</p>
+              </div>
+              <div class="card">
+                <span class="tag">实验结果</span>
+                <h3 class="mt-3">最关键结果</h3>
+                <p class="mt-2"><strong>Average@4</strong> 相对 tool-only 提升 <strong>+2.58~6.71</strong>，并支持跨模型迁移。</p>
+              </div>
+            </div>
+          </div>
+          <div class="footer-note">
+            Guanyu Jiang · Zhaochen Su · Xiaoye Qu · Yi R. Fung<br>
+            组会汇报版 / 中文解构 / 11 slides
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="研究背景·问题与动机">
+        <div class="spot blue"></div>
+        <div class="spot cyan"></div>
+        <div class="content">
+          <div class="topline">
+            <span>01 / 研究背景</span>
+            <span>Problem & Motivation</span>
+          </div>
+          <div class="flex flex-col gap-4">
+            <span class="pill">多模态 agent 已能调工具，但仍不够会“做事”</span>
+            <h2>问题不只是有无工具<br><span class="accent">而是不会持续变强</span></h2>
+          </div>
+          <div class="grid-2">
+            <div class="compare-card">
+              <span class="tag">Pain Point A</span>
+              <h3>工具使用低效</h3>
+              <p>简单题走太多步，复杂题却又探索不够深；试错成本高，turn budget 被浪费。</p>
+            </div>
+            <div class="compare-card">
+              <span class="tag">Pain Point B</span>
+              <h3>工具编排僵硬</h3>
+              <p>多数系统偏单路径执行，难以根据任务场景灵活切换工具与工作流。</p>
+            </div>
+          </div>
+          <ul class="mini-list">
+            <li><strong>作者视角：</strong>关键不是继续训练参数，而是让 agent 从过往轨迹里沉淀外部知识。</li>
+            <li><strong>多模态难点：</strong>很多决策线索来自视觉观察，仅看文本轨迹不足以召回正确经验。</li>
+          </ul>
+          <div class="footer-note">Figure 1 与引言共同强调：视觉语义错位会导致旋转、裁剪、检索等关键步骤缺失。</div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="研究背景·核心想法">
+        <div class="spot violet"></div>
+        <div class="spot cyan"></div>
+        <div class="content">
+          <div class="topline">
+            <span>01 / 研究背景</span>
+            <span>Core Idea</span>
+          </div>
+          <div class="flex flex-col gap-3">
+            <span class="pill">一句话：既记经验，也存技能</span>
+            <h2>让 agent 同时拥有<br><span class="accent">experience + skill</span></h2>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <span class="tag">experience</span>
+              <h3 class="mt-2">动作级、战术性</h3>
+              <p class="mini mt-2">回答“在什么条件下，应该做什么动作”。适合工具选择、错误恢复、局部决策。</p>
+              <ul class="mini-list mt-3">
+                <li>结构：condition → action</li>
+                <li>形式：短文本、可检索、上下文敏感</li>
+                <li>价值：让 agent 更会临场变招</li>
+              </ul>
+            </div>
+            <div class="card">
+              <span class="tag">skill</span>
+              <h3 class="mt-2">任务级、结构化</h3>
+              <p class="mini mt-2">回答“这类问题通常怎么规划”。适合工作流、工具模板、可复用步骤。</p>
+              <ul class="mini-list mt-3">
+                <li>结构：workflow + tool templates</li>
+                <li>形式：Markdown skill document</li>
+                <li>价值：让 agent 更稳、更少犯结构性错误</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <span class="tag claim-fact">[FACT]</span>
+            <p class="mini mt-2"><strong>作者的核心判断：</strong>skill 提升工具使用鲁棒性，experience 提升工具编排灵活性；两者互补，而不是替代关系。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="研究方法·整体框架">
+        <div class="spot blue"></div>
+        <div class="spot violet"></div>
+        <div class="content">
+          <div class="topline">
+            <span>02 / 研究方法</span>
+            <span>Overall Framework</span>
+          </div>
+          <div class="flex flex-col gap-3">
+            <span class="pill">视觉 grounding 是贯穿始终的主线</span>
+            <h2>不是静态记忆库<br>而是一个持续回流的闭环</h2>
+          </div>
+          <div class="loop">
+            <div class="card">
+              <span class="tag">Phase I</span>
+              <h3 class="mt-2">Accumulation</h3>
+              <p class="mini mt-2">从多路径 rollout 中提炼 <strong>Experience Bank</strong> 与 <strong>Skill Library</strong>。</p>
+            </div>
+            <div class="loop-mid">↻</div>
+            <div class="card">
+              <span class="tag">Phase II</span>
+              <h3 class="mt-2">Solving</h3>
+              <p class="mini mt-2">按子任务检索，再结合当前图像把经验与技能适配进 prompt。</p>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <h3>两个模型分工</h3>
+              <p class="mini mt-2"><strong>MLLMexec</strong> 负责执行工具推理，<strong>MLLMkb</strong> 负责提炼、整合、改写知识。</p>
+            </div>
+            <div class="card">
+              <h3>知识回流</h3>
+              <p class="mini mt-2">使用历史会被送回积累阶段，形成 continual learning loop。</p>
+            </div>
+          </div>
+          <div class="card">
+            <span class="tag claim-fact">[FACT]</span>
+            <p class="mini mt-2">论文当前实验是 <strong>single accumulation-then-test cycle</strong>，但整体架构被设计成可继续迭代 refined knowledge。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="研究方法·知识积累">
+        <div class="spot cyan"></div>
+        <div class="spot violet"></div>
+        <div class="content">
+          <div class="topline">
+            <span>02 / 研究方法</span>
+            <span>Knowledge Accumulation</span>
+          </div>
+          <div class="flex flex-col gap-3">
+            <span class="pill">目标：把轨迹变成可复用知识</span>
+            <h2>Phase I 重点不在“存日志”<br>而在<span class="accent">抽象与整合</span></h2>
+          </div>
+          <div class="phase-flow">
+            <div class="phase-box">
+              <span class="tag">A. Rollout Summary</span>
+              <p class="mini mt-2">多次 rollout 后做视觉 grounding 的摘要：保留关键决策点、失败原因、触发动作的视觉证据。</p>
+            </div>
+            <div class="arrow-down">↓</div>
+            <div class="phase-box">
+              <span class="tag">B. Cross-Rollout Critique</span>
+              <p class="mini mt-2">比较成功与失败轨迹，提炼可泛化的 condition-action 经验，避免只记“发生了什么”。</p>
+            </div>
+            <div class="arrow-down">↓</div>
+            <div class="phase-box">
+              <span class="tag">C. Knowledge Consolidation</span>
+              <p class="mini mt-2">按相似度、长度与质量做 merge / refine / delete，把零散片段变成干净的 knowledge base。</p>
+            </div>
+          </div>
+          <div class="footer-note">关键词：visual evidence、hierarchical consolidation、去冗余、跨 rollout 归因。</div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="研究方法·在线推理">
+        <div class="spot blue"></div>
+        <div class="spot cyan"></div>
+        <div class="content">
+          <div class="topline">
+            <span>02 / 研究方法</span>
+            <span>Inference & Adaptation</span>
+          </div>
+          <div class="flex flex-col gap-3">
+            <span class="pill">目标：把通用知识改写成当前任务可执行提示</span>
+            <h2>Phase II 的关键是<br><span class="accent">检索之后还要适配</span></h2>
+          </div>
+          <div class="step-flow">
+            <div class="step-box">
+              <span class="tag">1. Task Decomposition Retrieval</span>
+              <p class="mini mt-2">先把问题拆成多个子任务，再分别检索 top-k experiences，避免原始 query 一次检索漏掉关键维度。</p>
+            </div>
+            <div class="step-box">
+              <span class="tag">2. Experience Rewrite</span>
+              <p class="mini mt-2">把泛化经验重写到当前图像和问题上：保留结构，但丢掉不相关细节，变成当前 task 的 actionable hint。</p>
+            </div>
+            <div class="step-box">
+              <span class="tag">3. Skill Adaptation & Injection</span>
+              <p class="mini mt-2">裁剪 skill document 的无关段落，把改写后的经验嵌入 workflow，再以 non-prescriptive reference 注入 prompt。</p>
+            </div>
+          </div>
+          <div class="card">
+            <span class="tag claim-fact">[FACT]</span>
+            <p class="mini mt-2">作者强调：不是把技能模板硬塞给 agent，而是给出可参考、可偏离的结构化提示，让 agent 保留 improvise 的空间。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="实验结果·实验设置">
+        <div class="spot violet"></div>
+        <div class="spot blue"></div>
+        <div class="content">
+          <div class="topline">
+            <span>03 / 实验结果</span>
+            <span>Experimental Setup</span>
+          </div>
+          <div class="flex flex-col gap-3">
+            <span class="pill">实验设计覆盖任务、模型、工具、迁移</span>
+            <h2>实验设置关注的不只是性能<br>还有知识迁移性</h2>
+          </div>
+          <div class="grid-3">
+            <div class="stat">
+              <div class="number">5</div>
+              <div class="label">benchmarks / 3 domains</div>
+            </div>
+            <div class="stat">
+              <div class="number">4</div>
+              <div class="label">backbones</div>
+            </div>
+            <div class="stat">
+              <div class="number">2</div>
+              <div class="label">metrics: Average@4 / Pass@4</div>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <h3>任务域</h3>
+              <ul class="mini-list mt-3">
+                <li>Visual agentic tool use</li>
+                <li>Multimodal search</li>
+                <li>Comprehensive reasoning</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>模型与工具</h3>
+              <ul class="mini-list mt-3">
+                <li>Gemini-2.5-Pro / Gemini-3-Flash</li>
+                <li>GPT-5-mini / o4-mini</li>
+                <li>Code / Web Search / Image Search / Visit</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <span class="tag claim-fact">[FACT]</span>
+            <p class="mini mt-2">Gemini 系列自己积累知识；GPT-5-mini 与 o4-mini 直接复用 Gemini-3-Flash 积累的知识，专门测试 <strong>cross-model transferability</strong>。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="实验结果·主结果">
+        <div class="spot blue"></div>
+        <div class="spot cyan"></div>
+        <div class="content">
+          <div class="topline">
+            <span>03 / 实验结果</span>
+            <span>Main Results</span>
+          </div>
+          <div class="flex flex-col gap-3">
+            <span class="pill">关键词：稳定增益 + 跨模型有效</span>
+            <h2>主结果说明：XSKILL 不只是能赢<br><span class="accent">而且赢得比较稳</span></h2>
+          </div>
+          <div class="grid-3">
+            <div class="stat">
+              <div class="number">+2.58~6.71</div>
+              <div class="label">Average@4 over tool-only baseline</div>
+            </div>
+            <div class="stat">
+              <div class="number">+11.13</div>
+              <div class="label">TIR-Bench / Gemini-3-Flash vs strongest baseline</div>
+            </div>
+            <div class="stat">
+              <div class="number">2</div>
+              <div class="label">transferred models still improve</div>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>w/ Tools</th>
+                <th>XSkill</th>
+                <th>Gain</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Gemini-2.5-Pro</td>
+                <td>23.87</td>
+                <td>28.63</td>
+                <td class="gain">+4.76</td>
+              </tr>
+              <tr>
+                <td>Gemini-3-Flash</td>
+                <td>33.63</td>
+                <td>40.34</td>
+                <td class="gain">+6.71</td>
+              </tr>
+              <tr>
+                <td>GPT-5-mini</td>
+                <td>20.61</td>
+                <td>23.19</td>
+                <td class="gain">+2.58</td>
+              </tr>
+              <tr>
+                <td>o4-mini</td>
+                <td>19.56</td>
+                <td>23.72</td>
+                <td class="gain">+4.16</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="card">
+            <span class="tag claim-fact">[FACT]</span>
+            <p class="mini mt-2">结果同时提升了 <strong>Average@4</strong> 与 <strong>Pass@4</strong>，意味着它既提高单次 rollout 的可靠性，也提升“至少有一次能做对”的上界能力。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="分析讨论">
+        <div class="spot violet"></div>
+        <div class="spot cyan"></div>
+        <div class="content">
+          <div class="topline">
+            <span>04 / 分析讨论</span>
+            <span>Ablation & Discussion</span>
+          </div>
+          <div class="flex flex-col gap-3">
+            <span class="pill">两类知识都重要，但积累质量更重要</span>
+            <h2>消融给出的信息非常清楚：<br><span class="accent">Phase I 比 Phase II 更关键</span></h2>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <span class="tag">What is necessary</span>
+              <ul class="mini-list mt-3">
+                <li><strong>w/o Experience：</strong>Average@4 下降 <strong>-3.04</strong></li>
+                <li><strong>w/o Skill：</strong>Average@4 下降 <strong>-3.85</strong></li>
+                <li><strong>w/o Experience Manager：</strong><span class="warning">-4.09</span></li>
+                <li><strong>w/o Skill Manager：</strong><span class="warning">-3.62</span></li>
+              </ul>
+            </div>
+            <div class="card">
+              <span class="tag">What changes behavior</span>
+              <ul class="mini-list mt-3">
+                <li>VisualToolBench 上 code interpreter 使用率：<strong>66.63% → 74.49% → 76.97%</strong></li>
+                <li>MMSearch-Plus 上 code interpreter：<strong>6.18% → 13.21%</strong></li>
+                <li>image search：<strong>15.43% → 24.63%</strong></li>
+                <li>说明 experience 主要影响<strong>战术工具选择</strong>。</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <span class="tag claim-fact">[FACT]</span>
+            <p class="mini mt-2">作者据此认为：<strong>先把知识积累好</strong> 比“检索写得多聪明”更关键；skill 更像减少结构性错误，experience 更像引导灵活工具编排。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="启发">
+        <div class="spot blue"></div>
+        <div class="spot violet"></div>
+        <div class="content">
+          <div class="topline">
+            <span>05 / 启发</span>
+            <span>Takeaways</span>
+          </div>
+          <div class="flex flex-col gap-3">
+            <span class="pill">这篇文章真正回答的是“为什么要双流知识”</span>
+            <h2>对我来说，XSKILL 的价值<br>在于把“记忆”做成了可执行系统</h2>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <span class="tag claim-fact">[FACT]</span>
+              <ul class="mini-list mt-3">
+                <li>skill 与 experience 是互补的，不是二选一。</li>
+                <li>视觉 grounding 对多模态 agent 至关重要。</li>
+                <li>知识可以跨模型迁移，说明它不只是模型专属技巧。</li>
+                <li>论文强调 superior zero-shot generalization。</li>
+              </ul>
+            </div>
+            <div class="card">
+              <span class="tag claim-plan">[PLAN]</span>
+              <ul class="mini-list mt-3">
+                <li>当前验证仍主要是单轮 accumulation-then-test。</li>
+                <li>真正的 lifelong refinement 还需要更长周期实验。</li>
+                <li>知识质量依赖 rollout 多样性与 critique 质量。</li>
+                <li>后续可关注成本、时延和更复杂工具生态。</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <p class="mini"><strong>一句 takeaway：</strong>如果说传统 agent 的问题是“只会做当前题”，那 XSKILL 在尝试让它把一次次做题经验，真正转化成下次能用的外部能力。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide qna-slide" data-title="Q&A">
+        <div class="spot cyan"></div>
+        <div class="spot violet"></div>
+        <div class="content">
+          <div class="topline">
+            <span>06 / Q&A</span>
+            <span>Discussion</span>
+          </div>
+          <div class="qna-center">
+            <h1>Q&amp;A</h1>
+            <div class="footer-note">
+              XSKILL: Continual Learning from Experience and Skills in Multimodal Agents<br>
+              Guanyu Jiang · Zhaochen Su · Xiaoye Qu · Yi R. Fung
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div class="page-corner" id="pageLabel" aria-label="当前页码">01 / 11</div>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const pageLabel = document.getElementById('pageLabel');
+    let currentIndex = 0;
+
+    function pad(num) {
+      return String(num).padStart(2, '0');
+    }
+
+    function goToSlide(index) {
+      if (index < 0 || index >= slides.length) {
+        return;
+      }
+
+      slides.forEach((slide, idx) => {
+        slide.classList.remove('active', 'prev');
+        if (idx < index) {
+          slide.classList.add('prev');
+        }
+        if (idx === index) {
+          slide.classList.add('active');
+        }
+      });
+
+      currentIndex = index;
+      pageLabel.textContent = `${pad(index + 1)} / ${pad(slides.length)}`;
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+        event.preventDefault();
+        goToSlide(Math.min(currentIndex + 1, slides.length - 1));
+      }
+      if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+        event.preventDefault();
+        goToSlide(Math.max(currentIndex - 1, 0));
+      }
+      if (event.key === 'Home') {
+        goToSlide(0);
+      }
+      if (event.key === 'End') {
+        goToSlide(slides.length - 1);
+      }
+    });
+    goToSlide(0);
+  </script>
+</body>
+</html>
